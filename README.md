@@ -1,4 +1,4 @@
-# First two steps are for that person ==***which is making the backend from scratch***== but the ==***person who is cloning this repo***== must follow from the fourth step so as to have a fast hands on (if not done this type of thing earlier)
+# First two steps are for that person ***which is making the backend from scratch*** but the ***person who is cloning this repo*** must follow from the fourth step so as to have a fast hands on (if not done this type of thing earlier)
 
 
 ## First Step is to follow these substeps
