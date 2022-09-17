@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();//express ke andar router hota hai
-const Notes = require('../models/Post');
+const Posts = require('../models/Post');
 const fetch_user = require('../middleware/fetchUser');
 const { body, validationResult } = require('express-validator');
 
-// Route 1 : Get all the notes using : GET "/api/posts/fetchAllNotes". Login required
+// Route 1 : Get all the posts using : GET "/api/posts/fetchAllPosts". Login required
 router.get('/fetchAllPosts', fetch_user, async (req, res) => {
     try {
-        const notes = await Notes.find({ user: req.user.id });
-        res.json(notes);
+        const posts = await Posts.find({ user: req.user.id });
+        res.json(posts);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
@@ -16,9 +16,8 @@ router.get('/fetchAllPosts', fetch_user, async (req, res) => {
 })
 
 
-// Route 2 : Add a new note using : POST "/api/posts/addPosts". Login required
+// Route 2 : Add a new post using : POST "/api/posts/addPosts". Login required
 router.post('/addPosts', fetch_user, [
-    body('title', 'Enter a valid title').isLength({ min: 2 }),
     body('description', 'Description must be atleast 5 character').isLength({ min: 5 }),
 ], async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -27,29 +26,29 @@ router.post('/addPosts', fetch_user, [
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const { title, description, tag } = req.body;//destructuring
-        const note = new Notes({ title, description, tag, user: req.user.id })//new is a method in JS to make an instance of an object or you can say it is a constructor
-        const savedNote = await note.save();
-        res.json(savedNote);
+        const { description } = req.body;//destructuring
+        const post = new Posts({  description, user: req.user.id })//new is a method in JS to make an instance of an object or you can say it is a constructor
+        const savedPost = await post.save();
+        res.json(savedPost);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
     }
 })
 
-// Route 3 : Delete a note using : DELETE "/api/posts/deletePosts". Login required
+// Route 3 : Delete a post using : DELETE "/api/posts/deletePosts". Login required
 router.delete('/deletePosts/:id', fetch_user, async (req, res) => {//id here is object id not user id
     try {
-        // Find the note to be deleted and delete it
-        let note = await Notes.findById(req.params.id);//params matlab jo url me id hai vaha se id lunga and check karunga
-        if (!note) {
+        // Find the post to be deleted and delete it
+        let post = await Posts.findById(req.params.id);//params matlab jo url me id hai vaha se id lunga and check karunga
+        if (!post) {
             return res.status(404).send('Not found');
         }
-        if (note.user.toString() !== req.user.id) {// checking the id of the user whose these notes are and the id of the user who is requesting to update the notes
+        if (post.user.toString() !== req.user.id) {// checking the id of the user whose these posts are and the id of the user who is requesting to update the posts
             return res.status(401).send('Not Allowed');
         }
-        await Notes.findByIdAndDelete(req.params.id);//will not return anything obviously
-        res.json({ 'Success': 'The notes has been deleted.', id: req.params.id, note });
+        await Posts.findByIdAndDelete(req.params.id);//will not return anything obviously
+        res.json({ 'Success': 'The post has been deleted.', id: req.params.id, post });
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
