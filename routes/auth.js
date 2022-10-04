@@ -17,6 +17,7 @@ router.post('/createUser', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
+    body('status', 'Status must be atleast 3 characters').isLength({ min: 3 }),
 ], async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -36,7 +37,8 @@ router.post('/createUser', [
         user = await User.create({
             name: req.body.name,
             password: secured_password,
-            email: req.body.email
+            email: req.body.email,
+            status: req.body.status
         })
         const data = {//accessing data by using object id because it will be the fastest access
             user: {
