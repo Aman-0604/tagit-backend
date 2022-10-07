@@ -15,6 +15,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    college: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         required: true
