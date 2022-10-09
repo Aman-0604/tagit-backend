@@ -112,5 +112,25 @@ router.post('/getUser',fetch_user,async (req, res) => {
     }
 })
 
+// Route 4 : Update user details using : PUT "/api/auth/updateUser". Login required
+router.put('/updateUser', fetch_user, async (req, res) => {
+    try {
+        userId=req.user.id;
+        const { status, college } = req.body;//destructuring
+        const newUser = {};
+        if (status) { newUser.status = status };//agar request me status aa raha hai toh usse newUser ke status ke barabar kar do and agar nahi aa raha hai toh iska matlab user update nahi kar raha
+        if (college) { newUser.college = college };
+
+        if (userId !==req.user.id) {
+            return res.status(401).send('Not Allowed');
+        }
+        const user = await User.findByIdAndUpdate(userId, { $set: newUser }, { new: true });// The default is to return the original, unaltered document. If you want the new, updated document to be returned you have to pass an additional argument: an object with the new property set to true.
+        // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+        res.json({ user });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
 module.exports = router;
